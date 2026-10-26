@@ -28,5 +28,21 @@ pnpm preview
 
 Update each lesson's `videoId` in `src/App.tsx` with the YouTube video ID you want to embed. For a video URL such as `https://www.youtube.com/watch?v=VIDEO_ID`, use `VIDEO_ID`.
 
-The AI tutor UI currently uses a local demo response. Connect it to your backend/API before production. PWA manifest is included; add a service worker and app icons before considering the PWA complete.
-# course-learning-platform
+## Deploy on Vercel
+
+### Option 1: Automatic Git Deployment (Recommended)
+1. Go to [Vercel Dashboard](https://vercel.com/new).
+2. Import the Git repository: **`jasim-sct/course-learning-platform`**.
+3. Vercel automatically detects the framework from `vercel.json`:
+   - **Framework Preset**: `Vite`
+   - **Build Command**: `npm run build` (or `pnpm build`)
+   - **Output Directory**: `dist`
+4. Click **Deploy**. Any future commits to `main` will automatically trigger a production deployment.
+
+### Option 2: Deploy via Vercel CLI
+```bash
+npm install -g vercel
+vercel
+vercel --prod
+```
+
