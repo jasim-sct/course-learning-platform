@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Word Rain Arcade — LUMA Academy</title>
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS & SYSTEM VARIABLES
+       ========================================================================== */
+    :root {
+      --primary-blue: #2563eb;
+      --primary-cyan: #0284c7;
+      --accent-indigo: #6366f1;
+      --accent-purple: #8b5cf6;
+      --accent-gold: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      
+      /* Glassmorphism Refractive Colors */
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.85);
+      --glass-shadow: 0 12px 36px 0 rgba(31, 38, 135, 0.12);
+      --glass-blur: blur(20px) saturate(190%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    /* ==========================================================================
+       PREMIUM DYNAMIC SVG BACKGROUND
+       Visible through glassmorphism & light blurring
+       ========================================================================== */
+    .sky-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 1;
+      background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 35%, #f5f3ff 70%, #ecfeff 100%);
+    }
+
+    /* SVG Master Artboard */
+    .svg-master-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* Animated Gyroscope Orbital Rings */
+    .orbit-group-1 {
+      transform-origin: 1600px 320px;
+      animation: rotateOrbitSlow 45s linear infinite;
+    }
+    .orbit-group-2 {
+      transform-origin: 320px 800px;
+      animation: rotateOrbitReverse 55s linear infinite;
+    }
+
+    @keyframes rotateOrbitSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes rotateOrbitReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    /* Dynamic SVG Flow Waves Animation */
+    .flow-wave-1 {
+      animation: waveDrift1 22s ease-in-out infinite alternate;
+    }
+    .flow-wave-2 {
+      animation: waveDrift2 28s ease-in-out infinite alternate;
+    }
+    .flow-wave-3 {
+      animation: waveDrift3 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes waveDrift1 {
+      0% { transform: translateY(0) scaleY(1); }
+      50% { transform: translateY(-25px) scaleY(1.04); }
+      100% { transform: translateY(20px) scaleY(0.96); }
+    }
+    @keyframes waveDrift2 {
+      0% { transform: translateX(0) scaleX(1); }
+      50% { transform: translateX(35px) scaleX(1.05); }
+      100% { transform: translateX(-30px) scaleX(0.95); }
+    }
+    @keyframes waveDrift3 {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(30px) rotate(1deg); }
+      100% { transform: translateY(-20px) rotate(-1deg); }
+    }
+
+    /* Floating Sacred Polyhedra & Diamond Nodes */
+    .floating-poly-1 {
+      animation: floatPoly 12s ease-in-out infinite alternate;
+    }
+    .floating-poly-2 {
+      animation: floatPoly 16s ease-in-out 3s infinite alternate-reverse;
+    }
+
+    @keyframes floatPoly {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(15deg); }
+      100% { transform: translateY(15px) rotate(-10deg); }
+    }
+
+    /* Chromatic Luminous Glow Spheres (Backlight for glass blur) */
+    .chromatic-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      opacity: 0.75;
+      mix-blend-mode: multiply;
+      animation: glowFloat 20s ease-in-out infinite alternate;
+    }
+    .glow-sapphire {
+      top: -100px;
+      right: 15%;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.45) 0%, rgba(37, 99, 235, 0.05) 70%, transparent 100%);
+    }
+    .glow-violet {
+      bottom: 25%;
+      left: -80px;
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.05) 70%, transparent 100%);
+      animation-duration: 25s;
+    }
+    .glow-emerald {
+      bottom: 5%;
+      right: -60px;
+      width: 460px;
+      height: 460px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.38) 0%, rgba(16, 185, 129, 0.04) 70%, transparent 100%);
+      animation-duration: 22s;
+    }
+    .glow-cyan {
+      top: 35%;
+      left: 20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(6, 182, 212, 0.04) 70%, transparent 100%);
+      animation-duration: 18s;
+    }
+
+    @keyframes glowFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, 30px) scale(1.12); }
+      100% { transform: translate(-30px, 20px) scale(0.92); }
+    }
+
+    /* Falling Parallax Rain Streaks */
+    .rain-field {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      overflow: hidden;
+    }
+
+    .rain-drop-streak {
+      position: absolute;
+      top: -70px;
+      width: 2.2px;
+      height: 45px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(59, 130, 246, 0.4) 60%, rgba(37, 99, 235, 0.8) 100%);
+      border-radius: 2px;
+      transform: rotate(7deg);
+      animation: rainStreakFall linear infinite;
+    }
+
+    @keyframes rainStreakFall {
+      0% { transform: translateY(-90px) rotate(7deg); opacity: 0; }
+      15% { opacity: 0.85; }
+      85% { opacity: 0.85; }
+      100% { transform: translateY(105vh) rotate(7deg); opacity: 0; }
+    }
+
+    /* Upward Parallax Micro-Bubbles */
+    .bubble-field {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      overflow: hidden;
+    }
+
+    .bubble-orb {
+      position: absolute;
+      bottom: -40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(224, 242, 254, 0.45) 60%, rgba(186, 230, 253, 0.1) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
+      animation: bubbleRise ease-in-out infinite;
+    }
+
+    @keyframes bubbleRise {
+      0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+      20% { opacity: 0.7; }
+      50% { transform: translateY(-50vh) translateX(30px) scale(1.08); }
+      80% { opacity: 0.7; }
+      100% { transform: translateY(-105vh) translateX(-25px) scale(0.9); opacity: 0; }
+    }
+
+    /* 2D Canvas for fireworks & confetti bursts */
+    #fx-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 35;
+    }
+
+    /* ==========================================================================
+       GLASSMORPHISM UI LAYER (LIGHT BLURRING & TRANSLUCENCY)
+       ========================================================================== */
+
+    /* TOP GLASS HUD BAR */
+    .arcade-hud {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: max(12px, env(safe-area-inset-top, 12px)) 16px 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.52);
+      backdrop-filter: blur(24px) saturate(190%);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .hud-controls-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      color: #1e293b;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+      transition: all 0.15s ease;
+    }
+    .hud-icon-btn:active {
+      transform: scale(0.94);
+      background: rgba(241, 245, 249, 0.9);
+    }
+
+    .hud-metrics-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .metric-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .badge-round {
+      background: rgba(239, 246, 255, 0.75);
+      border: 1.5px solid rgba(191, 219, 254, 0.85);
+      color: var(--primary-blue);
+      font-family: 'Space Grotesk', sans-serif;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.08);
+    }
+    .badge-score {
+      background: rgba(255, 247, 237, 0.8);
+      border: 1.5px solid rgba(254, 215, 170, 0.9);
+      color: #ea580c;
+      box-shadow: 0 2px 10px rgba(234, 88, 12, 0.08);
+    }
+
+    /* ==========================================================================
+       MAIN RAINING WORDS ARENA (ACTIVE STAGE)
+       ========================================================================== */
+    #rain-stage {
+      position: absolute;
+      inset: 0;
+      top: 65px;
+      bottom: 160px;
+      z-index: 20;
+      overflow: hidden;
+      pointer-events: auto;
+    }
+
+    /* Translucent Cloud Canopy at Top */
+    .cloud-canopy {
+      position: absolute;
+      top: -15px;
+      left: 0;
+      right: 0;
+      height: 45px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+      pointer-events: none;
+      z-index: 22;
+    }
+
+    /* Glassmorphic Raining Word Capsule (Reveals background SVG) */
+    .word-raindrop {
+      position: absolute;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 18px;
+      min-width: 72px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.68) 0%, rgba(238, 246, 255, 0.48) 100%);
+      backdrop-filter: blur(16px) saturate(200%);
+      -webkit-backdrop-filter: blur(16px) saturate(200%);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      color: #1e3a8a;
+      font-family: 'Outfit', sans-serif;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+      box-shadow: 
+        0 12px 30px -4px rgba(37, 99, 235, 0.22),
+        0 4px 12px rgba(14, 165, 233, 0.12),
+        inset 0 2px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -2px 6px rgba(37, 99, 235, 0.08);
+      cursor: pointer;
+      will-change: transform, top, left;
+      touch-action: manipulation;
+      animation: swayWind 1.1s ease-in-out infinite alternate;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s, background 0.2s;
+    }
+
+    /* Refractive Glass Specular Highlight */
+    .word-raindrop::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 12px;
+      right: 12px;
+      height: 7px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.1) 100%);
+      pointer-events: none;
+    }
+
+    /* Flowing water drop tail at top */
+    .word-raindrop::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      width: 7px;
+      height: 12px;
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0) 0%, rgba(147, 197, 253, 0.8) 100%);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .word-raindrop:hover {
+      transform: scale(1.1) !important;
+      border-color: #60a5fa;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(219, 234, 254, 0.62) 100%);
+      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.3);
+    }
+
+    .word-raindrop:active {
+      transform: scale(0.92) !important;
+    }
+
+    @keyframes swayWind {
+      0% { margin-left: -7px; transform: rotate(-2.5deg); }
+      100% { margin-left: 7px; transform: rotate(2.5deg); }
+    }
+
+    /* Wrong Option Shake Animation */
+    .word-raindrop.shake-error {
+      background: rgba(254, 242, 242, 0.85) !important;
+      border-color: #ef4444 !important;
+      color: #b91c1c !important;
+      animation: shakeAnim 0.36s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.45) !important;
+    }
+
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-3px, 0, 0); }
+      20%, 80% { transform: translate3d(5px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* ==========================================================================
+       BOTTOM GLASS TARGET DOCK (MAGNETIC RECEIVER)
+       ========================================================================== */
+    .sentence-anchor-dock {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 14px 16px max(18px, env(safe-area-inset-bottom, 18px));
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dock-prompt-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .dock-prompt-cue {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: var(--primary-blue);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dock-hint-tag {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #475569;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      padding: 3px 11px;
+      border-radius: 12px;
+    }
+
+    .sentence-display-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 14px 22px;
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+      position: relative;
+    }
+
+    .sentence-lead-word,
+    .sentence-tail-word {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+
+    /* Target Magnetic Slot */
+    .magnetic-blank-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 114px;
+      height: 52px;
+      padding: 0 18px;
+      border-radius: 16px;
+      border: 2px dashed var(--primary-blue);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: var(--primary-blue);
+      font-family: 'Outfit', sans-serif;
+      font-size: 23px;
+      font-weight: 900;
+      box-shadow: 0 0 18px rgba(37, 99, 235, 0.22);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: pulseMagnet 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseMagnet {
+      0% { 
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.2); 
+        border-color: #60a5fa; 
+      }
+      100% { 
+        box-shadow: 0 0 26px rgba(37, 99, 235, 0.55); 
+        border-color: #2563eb; 
+      }
+    }
+
+    /* When Filled Correctly */
+    .magnetic-blank-slot.is-filled {
+      border: 2px solid var(--accent-emerald) !important;
+      background: rgba(236, 253, 245, 0.85) !important;
+      color: #059669 !important;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.5) !important;
+      animation: popSlotFilled 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+    }
+
+    @keyframes popSlotFilled {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    /* Floating Points Indicator */
+    .floating-points {
+      position: absolute;
+      top: -30px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: #10b981;
+      text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+      pointer-events: none;
+      animation: floatUpFade 1s ease-out forwards;
+    }
+
+    @keyframes floatUpFade {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      20% { opacity: 1; transform: translateY(-10px) scale(1.2); }
+      100% { transform: translateY(-35px) scale(1); opacity: 0; }
+    }
+
+    /* ==========================================================================
+       VICTORY CELEBRATION MODAL (FROSTED GLASS)
+       ========================================================================== */
+    .victory-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .victory-modal-backdrop.is-active {
+      display: flex;
+      animation: modalFadeIn 0.35s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .victory-dialog {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(32px) saturate(200%);
+      -webkit-backdrop-filter: blur(32px) saturate(200%);
+      border-radius: 30px;
+      padding: 36px 26px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+    }
+
+    .trophy-orb {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 3px solid #f59e0b;
+      color: #d97706;
+      font-size: 42px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 28px rgba(245, 158, 11, 0.35);
+      animation: popSlotFilled 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .victory-badge-pill {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: #d97706;
+      letter-spacing: 1.6px;
+    }
+
+    .victory-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text-main);
+      letter-spacing: -0.4px;
+    }
+
+    .victory-summary {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .victory-score-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 24px;
+      background: rgba(255, 247, 237, 0.85);
+      border: 1px solid #fed7aa;
+      color: #ea580c;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .victory-action-btn {
+      margin-top: 8px;
+      width: 100%;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+      transition: transform 0.15s ease;
+    }
+
+    .victory-action-btn:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       PREMIUM DYNAMIC SVG ARTWORK BACKDROP
+       Visible with luminous depth through glassmorphism & light blur
+       ======================================================================== -->
+  <div class="sky-container">
+    
+    <!-- MASTER VECTOR ARTBOARD -->
+    <svg class="svg-master-canvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <!-- Gradients -->
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f0fdf4" />
+          <stop offset="35%" stop-color="#eff6ff" />
+          <stop offset="70%" stop-color="#f5f3ff" />
+          <stop offset="100%" stop-color="#ecfeff" />
+        </linearGradient>
+
+        <linearGradient id="waveGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.5" />
+          <stop offset="50%" stop-color="#818cf8" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#c084fc" stop-opacity="0.4" />
+        </linearGradient>
+
+        <linearGradient id="waveGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.4" />
+          <stop offset="50%" stop-color="#a78bfa" stop-opacity="0.3" />
+          <stop offset="100%" stop-color="#34d399" stop-opacity="0.35" />
+        </linearGradient>
+
+        <linearGradient id="waveGrad3" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#34d399" stop-opacity="0.3" />
+          <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#818cf8" stop-opacity="0.3" />
+        </linearGradient>
+
+        <linearGradient id="orbitStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.6" />
+          <stop offset="50%" stop-color="#a855f7" stop-opacity="0.4" />
+          <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.5" />
+        </linearGradient>
+
+        <!-- Architectural Micro-Dot Pattern -->
+        <pattern id="dotGrid" width="36" height="36" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.4" fill="#3b82f6" fill-opacity="0.18" />
+        </pattern>
+
+        <!-- Isometric Diamond Pattern -->
+        <pattern id="isoGrid" width="72" height="72" patternUnits="userSpaceOnUse">
+          <path d="M36 0 L72 36 L36 72 L0 36 Z" fill="none" stroke="#60a5fa" stroke-opacity="0.08" stroke-width="1" />
+        </pattern>
+      </defs>
+
+      <!-- Base Sky Fill -->
+      <rect width="100%" height="100%" fill="url(#skyGrad)" />
+
+      <!-- Architectural Dot & Isometric Grids -->
+      <rect width="100%" height="100%" fill="url(#dotGrid)" />
+      <rect width="100%" height="100%" fill="url(#isoGrid)" />
+
+      <!-- LAYER 1: Deep Spline Ribbons (Topographic Iso-Waves) -->
+      <g class="flow-wave-1">
+        <path d="M-100,320 C300,180 620,440 1020,310 C1420,180 1720,410 2100,280 L2100,1200 L-100,1200 Z" fill="url(#waveGrad1)" />
+        <path d="M-100,320 C300,180 620,440 1020,310 C1420,180 1720,410 2100,280" fill="none" stroke="#2563eb" stroke-opacity="0.25" stroke-width="2.5" stroke-dasharray="12 8" />
+      </g>
+
+      <g class="flow-wave-2">
+        <path d="M-100,540 C340,680 720,420 1140,580 C1540,720 1780,500 2100,620 L2100,1200 L-100,1200 Z" fill="url(#waveGrad2)" />
+        <path d="M-100,540 C340,680 720,420 1140,580 C1540,720 1780,500 2100,620" fill="none" stroke="#8b5cf6" stroke-opacity="0.28" stroke-width="2" stroke-dasharray="8 6" />
+      </g>
+
+      <g class="flow-wave-3">
+        <path d="M-100,750 C260,860 680,680 1100,810 C1520,940 1820,760 2100,880 L2100,1200 L-100,1200 Z" fill="url(#waveGrad3)" />
+      </g>
+
+      <!-- LAYER 2: Celestial Orbital Gyroscope Rings (Upper Right) -->
+      <g class="orbit-group-1">
+        <ellipse cx="1600" cy="320" rx="360" ry="140" fill="none" stroke="url(#orbitStrokeGrad)" stroke-width="2" stroke-dasharray="14 10" />
+        <ellipse cx="1600" cy="320" rx="260" ry="260" fill="none" stroke="#3b82f6" stroke-opacity="0.2" stroke-width="1.5" />
+        <ellipse cx="1600" cy="320" rx="160" ry="70" fill="none" stroke="#8b5cf6" stroke-opacity="0.35" stroke-width="2" />
+        <!-- Orbital Satellite Nodes -->
+        <circle cx="1960" cy="320" r="7" fill="#3b82f6" filter="drop-shadow(0 0 8px #3b82f6)" />
+        <circle cx="1340" cy="320" r="5" fill="#8b5cf6" />
+        <circle cx="1600" cy="180" r="6" fill="#06b6d4" />
+      </g>
+
+      <!-- LAYER 3: Secondary Orbital Ring System (Lower Left) -->
+      <g class="orbit-group-2">
+        <ellipse cx="320" cy="800" rx="300" ry="110" fill="none" stroke="url(#orbitStrokeGrad)" stroke-width="2" stroke-dasharray="10 6" />
+        <ellipse cx="320" cy="800" rx="200" ry="200" fill="none" stroke="#10b981" stroke-opacity="0.22" stroke-width="1.5" />
+        <circle cx="620" cy="800" r="6" fill="#10b981" />
+        <circle cx="320" cy="600" r="5" fill="#3b82f6" />
+      </g>
+
+      <!-- LAYER 4: Geometric Wireframe Accents -->
+      <g class="floating-poly-1" transform="translate(420, 260)">
+        <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" fill="none" stroke="#3b82f6" stroke-opacity="0.35" stroke-width="1.8" />
+        <circle cx="0" cy="0" r="4" fill="#3b82f6" fill-opacity="0.5" />
+      </g>
+
+      <g class="floating-poly-2" transform="translate(1380, 720)">
+        <polygon points="0,-35 30,-15 30,15 0,35 -30,15 -30,-15" fill="none" stroke="#8b5cf6" stroke-opacity="0.3" stroke-width="1.8" />
+        <circle cx="0" cy="0" r="3" fill="#8b5cf6" fill-opacity="0.5" />
+      </g>
+    </svg>
+
+    <!-- Chromatic Glowing Energy Spheres (Radiates rich colors through frosted glass) -->
+    <div class="chromatic-glow glow-sapphire"></div>
+    <div class="chromatic-glow glow-violet"></div>
+    <div class="chromatic-glow glow-emerald"></div>
+    <div class="chromatic-glow glow-cyan"></div>
+
+    <!-- Diagonal Raining Particle Streaks -->
+    <div class="rain-field" id="rain-field"></div>
+
+    <!-- Floating Upward Parallax Micro-Bubbles -->
+    <div class="bubble-field" id="bubble-field"></div>
+  </div>
+
+  <!-- Particle Burst Canvas -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- ========================================================================
+       TOP GLASS HUD BAR
+       ======================================================================== -->
+  <header class="arcade-hud">
+    <div class="hud-controls-left">
+      <button class="hud-icon-btn" id="exit-btn" aria-label="Exit Game">
+        <span>✕ Exit</span>
+      </button>
+      <button class="hud-icon-btn" id="fullscreen-btn" aria-label="Toggle Fullscreen">
+        <span id="fullscreen-text">⛶ Fullscreen</span>
+      </button>
+    </div>
+
+    <div class="hud-metrics-right">
+      <span class="metric-badge badge-round" id="round-badge">ROUND 1 / 3</span>
+      <span class="metric-badge badge-score" id="score-badge">⭐ 0 PTS</span>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN RAINING WORDS ARENA (ACTIVE STAGE)
+       ======================================================================== -->
+  <main id="rain-stage">
+    <div class="cloud-canopy"></div>
+    <!-- Descending glassmorphic word capsules spawn here -->
+  </main>
+
+  <!-- ========================================================================
+       BOTTOM GLASS TARGET DOCK (MAGNETIC RECEIVER)
+       ======================================================================== -->
+  <footer class="sentence-anchor-dock">
+    <div class="dock-prompt-row">
+      <span class="dock-prompt-cue">🌧️ Tap the falling word that fits:</span>
+      <span class="dock-hint-tag" id="hint-tag">Singular Past Continuous</span>
+    </div>
+
+    <div class="sentence-display-card">
+      <span class="sentence-lead-word" id="sentence-prefix">I</span>
+      <span class="magnetic-blank-slot" id="target-slot">______</span>
+      <span class="sentence-tail-word" id="sentence-suffix">going</span>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       VICTORY CELEBRATION MODAL
+       ======================================================================== -->
+  <div class="victory-modal-backdrop" id="victory-modal">
+    <div class="victory-dialog">
+      <div class="trophy-orb">🏆</div>
+      <span class="victory-badge-pill">CHALLENGE CONQUERED!</span>
+      <h2 class="victory-title">Lightning Reflexes!</h2>
+      <p class="victory-summary">
+        You successfully caught all the correct raining auxiliary verbs with impeccable timing and precision.
+      </p>
+
+      <div class="victory-score-display">
+        <span>Final Score:</span>
+        <strong id="final-score-text">300 PTS</strong>
+      </div>
+
+      <button class="victory-action-btn" id="finish-btn">
+        <span>Complete & Return to Session →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       GAME SCRIPT & WEB AUDIO SYNTHESIS
+       ======================================================================== -->
+  <script>
+    // Native Sound Synthesizer (Zero external audio files needed)
+    class ArcadeSoundFX {
+      constructor() {
+        this.ctx = null;
+      }
+      ensureContext() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTap() {
+        this.ensureContext();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+      playCorrect() {
+        this.ensureContext();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          const t = this.ctx.currentTime + idx * 0.06;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.28);
+        });
+      }
+      playWrong() {
+        this.ensureContext();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(105, this.ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.22);
+      }
+      playFanfare() {
+        this.ensureContext();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = this.ctx.currentTime + idx * 0.1;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.45);
+        });
+      }
+    }
+
+    const sound = new ArcadeSoundFX();
+
+    // Challenge Levels with dense raining word showers
+    const challengeLevels = [
+      {
+        prefix: 'I',
+        suffix: 'going',
+        correct: 'was',
+        hint: 'Singular Past: "I was going"',
+        words: [
+          'was', 'is', 'were', 'am', 'are', 'was', 'been', 'being',
+          'had', 'have', 'was', 'has', 'did', 'does', 'was', 'will',
+          'can', 'would', 'was', 'could', 'shall', 'were'
+        ]
+      },
+      {
+        prefix: 'Yesterday, they',
+        suffix: 'speaking',
+        correct: 'were',
+        hint: 'Plural Past: "they were speaking"',
+        words: [
+          'were', 'was', 'is', 'be', 'are', 'were', 'been', 'being',
+          'had', 'have', 'were', 'did', 'does', 'were', 'will', 'would',
+          'shall', 'were', 'could', 'are', 'was', 'were'
+        ]
+      },
+      {
+        prefix: 'Right now, she',
+        suffix: 'listening',
+        correct: 'is',
+        hint: 'Present Continuous: "she is listening"',
+        words: [
+          'is', 'are', 'were', 'be', 'am', 'is', 'was', 'been',
+          'being', 'has', 'is', 'have', 'had', 'is', 'does', 'did',
+          'will', 'is', 'can', 'are', 'were', 'is'
+        ]
+      }
+    ];
+
+    let currentLevel = 0;
+    let score = 0;
+    let isRoundLocked = false;
+    let rainingDrops = [];
+    let animationLoopId = null;
+
+    // DOM Elements
+    const stage = document.getElementById('rain-stage');
+    const sentencePrefix = document.getElementById('sentence-prefix');
+    const sentenceSuffix = document.getElementById('sentence-suffix');
+    const targetSlot = document.getElementById('target-slot');
+    const hintTag = document.getElementById('hint-tag');
+    const roundBadge = document.getElementById('round-badge');
+    const scoreBadge = document.getElementById('score-badge');
+    const exitBtn = document.getElementById('exit-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const fullscreenText = document.getElementById('fullscreen-text');
+    const victoryModal = document.getElementById('victory-modal');
+    const finalScoreText = document.getElementById('final-score-text');
+    const finishBtn = document.getElementById('finish-btn');
+    const rainField = document.getElementById('rain-field');
+    const bubbleField = document.getElementById('bubble-field');
+
+    // Fast Dynamic Rain & Bubble Atmosphere
+    function setupAtmosphere() {
+      for (let i = 0; i < 32; i++) {
+        const streak = document.createElement('div');
+        streak.className = 'rain-drop-streak';
+        streak.style.left = `${Math.random() * 100}%`;
+        streak.style.animationDuration = `${0.55 + Math.random() * 0.55}s`;
+        streak.style.animationDelay = `${Math.random() * 1.5}s`;
+        streak.style.height = `${35 + Math.random() * 40}px`;
+        rainField.appendChild(streak);
+      }
+
+      for (let i = 0; i < 14; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble-orb';
+        const size = 14 + Math.random() * 26;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${Math.random() * 95}%`;
+        bubble.style.animationDuration = `${5 + Math.random() * 6}s`;
+        bubble.style.animationDelay = `${Math.random() * 4}s`;
+        bubbleField.appendChild(bubble);
+      }
+    }
+    setupAtmosphere();
+
+    // 2D Particle System for Bursts
+    const canvas = document.getElementById('fx-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function handleResize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    function triggerBurst(x, y) {
+      const palette = ['#2563eb', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+      for (let i = 0; i < 35; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 7 + 2;
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * velocity,
+          vy: Math.sin(angle) * velocity - 1,
+          size: Math.random() * 5 + 3,
+          color: palette[Math.floor(Math.random() * palette.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+    }
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.18;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        } else {
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
+
+    // Level Management: Dense Spawning across entire screen
+    function loadRound(lvlIndex) {
+      currentLevel = lvlIndex;
+      isRoundLocked = false;
+      const data = challengeLevels[lvlIndex];
+
+      sentencePrefix.textContent = data.prefix;
+      sentenceSuffix.textContent = data.suffix;
+      targetSlot.textContent = '______';
+      targetSlot.className = 'magnetic-blank-slot';
+      hintTag.textContent = data.hint;
+
+      roundBadge.textContent = `ROUND ${lvlIndex + 1} / ${challengeLevels.length}`;
+      scoreBadge.textContent = `⭐ ${score} PTS`;
+
+      stage.innerHTML = '<div class="cloud-canopy"></div>';
+      rainingDrops = [];
+
+      const stageWidth = stage.clientWidth || window.innerWidth;
+      const stageHeight = stage.clientHeight || (window.innerHeight - 210);
+      const wordList = [...data.words];
+
+      // Calculate 4 to 6 lanes for full-width coverage
+      const laneCount = Math.max(3, Math.min(6, Math.floor((stageWidth - 20) / 95)));
+      const laneWidth = (stageWidth - 30) / laneCount;
+
+      // Distribute words from the top to bottom so screen is immediately FULL of falling words
+      const totalWords = wordList.length;
+      const yStep = (stageHeight + 80) / totalWords;
+
+      wordList.forEach((word, idx) => {
+        const lane = idx % laneCount;
+        const xPos = 15 + lane * laneWidth + (Math.random() * Math.max(5, laneWidth - 85));
+        
+        // Immediate full-screen vertical stagger
+        const yPos = -60 + (idx * yStep) - (Math.random() * 20);
+        
+        // Fast, arcade-grade falling speed (2.8px to 4.5px per frame)
+        const speed = 2.8 + (Math.random() * 1.7);
+
+        spawnWordRaindrop(word, xPos, yPos, speed);
+      });
+    }
+
+    function spawnWordRaindrop(word, xPos, yPos, speed) {
+      const dropEl = document.createElement('button');
+      dropEl.className = 'word-raindrop';
+      dropEl.textContent = word;
+
+      dropEl.style.left = `${xPos}px`;
+      dropEl.style.top = `${yPos}px`;
+
+      const raindropData = {
+        el: dropEl,
+        word: word,
+        x: xPos,
+        y: yPos,
+        speed: speed,
+        isAlive: true
+      };
+
+      dropEl.addEventListener('click', (e) => {
+        handleRaindropTap(raindropData, e);
+      });
+
+      stage.appendChild(dropEl);
+      rainingDrops.push(raindropData);
+    }
+
+    function handleRaindropTap(drop, e) {
+      if (isRoundLocked || !drop.isAlive) return;
+      const currentData = challengeLevels[currentLevel];
+
+      const rect = drop.el.getBoundingClientRect();
+      const clickX = rect.left + rect.width / 2;
+      const clickY = rect.top + rect.height / 2;
+
+      if (drop.word.toLowerCase() === currentData.correct.toLowerCase()) {
+        isRoundLocked = true;
+        drop.isAlive = false;
+        sound.playCorrect();
+        triggerBurst(clickX, clickY);
+
+        if (navigator.vibrate) {
+          navigator.vibrate([40, 60, 80]);
+        }
+
+        targetSlot.textContent = drop.word;
+        targetSlot.classList.add('is-filled');
+        drop.el.style.opacity = '0';
+        drop.el.style.transform = 'scale(1.5)';
+
+        score += 100;
+        scoreBadge.textContent = `⭐ ${score} PTS`;
+
+        const floatPts = document.createElement('div');
+        floatPts.className = 'floating-points';
+        floatPts.textContent = '+100 PTS';
+        floatPts.style.left = `${clickX - 40}px`;
+        floatPts.style.top = `${clickY - 20}px`;
+        document.body.appendChild(floatPts);
+        setTimeout(() => floatPts.remove(), 1000);
+
+        setTimeout(() => {
+          if (currentLevel + 1 < challengeLevels.length) {
+            loadRound(currentLevel + 1);
+          } else {
+            showVictoryScreen();
+          }
+        }, 1350);
+
+      } else {
+        sound.playWrong();
+        if (navigator.vibrate) {
+          navigator.vibrate([50, 40, 50]);
+        }
+
+        drop.el.classList.add('shake-error');
+        setTimeout(() => {
+          drop.el.classList.remove('shake-error');
+        }, 380);
+      }
+    }
+
+    // Animation Loop with fast recycling for continuous heavy word rain
+    function updateArcadeLoop() {
+      const stageHeight = stage.clientHeight || (window.innerHeight - 210);
+      const stageWidth = stage.clientWidth || window.innerWidth;
+
+      for (let i = 0; i < rainingDrops.length; i++) {
+        const drop = rainingDrops[i];
+        if (!drop.isAlive) continue;
+
+        drop.y += drop.speed;
+        drop.el.style.top = `${drop.y}px`;
+
+        // If it reaches bottom dock, splash and recycle immediately from top
+        if (drop.y > stageHeight - 38) {
+          drop.y = -65 - (Math.random() * 80);
+          drop.x = 15 + Math.random() * (stageWidth - 95);
+          drop.speed = 2.8 + (Math.random() * 1.7); // Maintain fast falling speed
+          drop.el.style.left = `${drop.x}px`;
+          drop.el.style.top = `${drop.y}px`;
+        }
+      }
+
+      renderParticles();
+      animationLoopId = requestAnimationFrame(updateArcadeLoop);
+    }
+
+    function showVictoryScreen() {
+      sound.playFanfare();
+      finalScoreText.textContent = `${score} PTS`;
+      victoryModal.classList.add('is-active');
+
+      try {
+        window.parent.postMessage({
+          type: 'GAME_COMPLETED',
+          gameId: 'game-1',
+          score: score
+        }, '*');
+      } catch (err) {}
+    }
+
+    // Controls
+    exitBtn.addEventListener('click', () => {
+      sound.playTap();
+      try {
+        window.parent.postMessage({ type: 'CLOSE_GAME' }, '*');
+      } catch (err) {}
+    });
+
+    fullscreenBtn.addEventListener('click', () => {
+      sound.playTap();
+      if (!document.fullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+          fullscreenText.textContent = '✕ Exit FS';
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+          fullscreenText.textContent = '⛶ Fullscreen';
+        }
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        fullscreenText.textContent = '⛶ Fullscreen';
+      } else {
+        fullscreenText.textContent = '✕ Exit FS';
+      }
+    });
+
+    finishBtn.addEventListener('click', () => {
+      sound.playTap();
+      try {
+        window.parent.postMessage({
+          type: 'GAME_COMPLETED',
+          gameId: 'game-1',
+          score: score
+        }, '*');
+        window.parent.postMessage({ type: 'CLOSE_GAME' }, '*');
+      } catch (err) {}
+    });
+
+    loadRound(0);
+    updateArcadeLoop();
+  </script>
+</body>
+</html>
